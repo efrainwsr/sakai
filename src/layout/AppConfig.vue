@@ -4,7 +4,7 @@ import Button from 'primevue/button';
 import InputSwitch from 'primevue/inputswitch';
 import Sidebar from 'primevue/sidebar';
 
-import { ref } from 'vue';
+import { ref,onMounted } from 'vue';
 import { useLayout } from '@/layout/composables/layout';
 
 defineProps({
@@ -15,12 +15,19 @@ defineProps({
 });
 const scales = ref([12, 13, 14, 15, 16]);
 const visible = ref(false);
+const myTheme = ref('bootstrap4-dark-blue');
+const myMode = ref('dark')
 
 const { changeThemeSettings, setScale, layoutConfig } = useLayout();
 
 const onConfigButtonClick = () => {
     visible.value = !visible.value;
 };
+
+const setDark = onMounted( ()=>{
+    onChangeTheme(myTheme.value, myMode.value)
+})
+
 const onChangeTheme = (theme, mode) => {
     const elementId = 'theme-css';
     const linkElement = document.getElementById(elementId);

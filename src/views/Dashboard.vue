@@ -130,14 +130,10 @@ watch(
                   :i = "index"
                   :cant = "items.cant"
                   />
-    </template>
-    <span class="block text-500 font-lg mb-2 font-semibold">{{toal}} {{totalBs}}</span>       
+    </template>    
  
-        
 
         
-        
-
 
       <!--  <div class="col-12 xl:col-6">
             <div class="card">
