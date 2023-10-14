@@ -2,7 +2,8 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 import { useLayout } from '@/layout/composables/layout';
 import { useRouter } from 'vue-router';
-
+import { store } from '../service/store.js';
+ 
 const { layoutConfig, onMenuToggle } = useLayout();
 
 const outsideClickListener = ref(null);
@@ -20,6 +21,11 @@ onBeforeUnmount(() => {
 const logoUrl = computed(() => {
     return `layout/images/${layoutConfig.darkTheme.value ? 'logo-white' : 'logo-dark'}.svg`;
 });
+
+const borrarCuenta = () =>{
+    store.total = 0;
+    store.totalBs = 0;
+};
 
 const onTopBarMenuButton = () => {
     topbarMenuActive.value = !topbarMenuActive.value;
@@ -62,23 +68,26 @@ const isOutsideClicked = (event) => {
 
 <template>
     <div class="layout-topbar">
-        <router-link to="/" class="layout-topbar-logo">
-            <img :src="logoUrl" alt="logo" />
-            <span>SAKAI</span>
-        </router-link>
-
+        
         <button class="p-link layout-menu-button layout-topbar-button" @click="onMenuToggle()">
             <i class="pi pi-bars"></i>
         </button>
 
+
+            <Chip :label="store.total.toFixed(2)" icon="pi pi-dollar" class="ml-2"></Chip>
+            <Chip :label="'Bs  ' + store.totalBs.toFixed(2)"  icon="" class="ml-2"></Chip>
+ 
+       
         <button class="p-link layout-topbar-menu-button layout-topbar-button" @click="onTopBarMenuButton()">
             <i class="pi pi-ellipsis-v"></i>
         </button>
 
+       
+
         <div class="layout-topbar-menu" :class="topbarMenuClasses">
-            <button @click="onTopBarMenuButton()" class="p-link layout-topbar-button">
-                <i class="pi pi-calendar"></i>
-                <span>Calendar</span>
+            <button @click="borrarCuenta" class="p-link layout-topbar-button">
+                <i class="pi pi-eraser"></i>
+                <span>Borrar</span>
             </button>
             <button @click="onTopBarMenuButton()" class="p-link layout-topbar-button">
                 <i class="pi pi-user"></i>

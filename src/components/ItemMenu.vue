@@ -7,7 +7,8 @@ defineProps({
     cat: Number,
     sumarFunc: Function,
     restarFunc: Function,
-    i: Number
+    i: Number,
+    cant: Number
 });
 </script>
 
@@ -28,13 +29,13 @@ defineProps({
                     <div class="inline text-900 font-medium ">Bs. {{ precioBs.toFixed(2) }}</div>
                 </div>
                 <div class="flex align-items-center justify-content-center border-round" style="width: 2.5rem; height: 2.5rem">
-                    <Button @click="restarFunc(i)" icon="pi pi-minus" severity="danger" text/>
+                    <Button @click="cant<=0 ? 'disabled' : restarFunc(i)" icon="pi pi-minus" severity="danger" text/>
                 </div>
                 <div  class="flex align-items-center justify-content-center border-round" style="width: 2.5rem; height: 2.5rem">
                     <Button @click="sumarFunc(i)" icon="pi pi-plus" severity="success" text/>
                 </div>
             </div>
-            <span class="text-500">Cant. </span>
+            <span class="text-500">Cant.  </span>
             <span class="text-green-500 font-medium text-lg">{{ cant }}</span>
         </div>
     </div>

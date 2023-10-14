@@ -12,6 +12,7 @@ import axios from 'axios'
   const menu = ref(0);
   const total = ref (0)
   const totalBs = ref (0)
+
   
    const obtenerBcv = onMounted( async ()=>{
    const { data } = await axios.get(url);
@@ -19,13 +20,15 @@ import axios from 'axios'
   })
 
   const sumarAlTotal = (i) => {
-    total.value += menu.value[i].precio;
-    totalBs.value += menu.value[i].precioBs; 
+    store.total += menu.value[i].precio;
+    store.totalBs += menu.value[i].precioBs;
+    menu.value[i].cant += 1;
   };
 
   const restarAlTotal = (i) => {
-    total.value -= menu.value[i].precio;
-    totalBs.value -= menu.value[i].precioBs;  
+    store.total -= menu.value[i].precio;
+    store.totalBs -= menu.value[i].precioBs; 
+    menu.value[i].cant -= 1; 
   };
 
   const borrarCuenta = () =>{
@@ -117,18 +120,6 @@ watch(
 
 <template>
     <div class="grid ">
-
-        <div class="col-12">
-        <div class="card mb-0">
-            <div class="flex justify-content-center">
-                <Chip :label="total.toFixed(2)" icon="pi pi-dollar" class="mr-8"></Chip>
-                <Chip :label="'Bs  ' + totalBs.toFixed(2)"  icon="" class=""></Chip>
-                <Chip :label="'Bs  ' + store.totalBs.toFixed(2)"  icon="" class=""></Chip>
-            
-            </div>
-        </div>
-    </div>
-
     <template v-for="(items, index) in menu">
         <ItemMenu :nombre   = "items.nombre + ' ' + items.desc" 
                   :precio   = "items.precio"
@@ -136,7 +127,9 @@ watch(
                   :cat      = "items.cat"
                   :sumarFunc = sumarAlTotal
                   :restarFunc = restarAlTotal
-                  :i = "index"  />
+                  :i = "index"
+                  :cant = "items.cant"
+                  />
     </template>
     <span class="block text-500 font-lg mb-2 font-semibold">{{toal}} {{totalBs}}</span>       
  
