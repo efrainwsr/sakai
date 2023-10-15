@@ -34,6 +34,7 @@ import axios from 'axios'
   const borrarCuenta = () =>{
     total.value=0;
     totalBs.value=0;
+    menu.value.forEach((objeto) => { objeto.cant = 0; });
   };
 
 

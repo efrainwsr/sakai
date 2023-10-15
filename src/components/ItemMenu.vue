@@ -14,8 +14,10 @@ defineProps({
 
 <template>
     <div class="col-12 lg:col-6 xl:col-4">
-        <div class="card mb-0">
+        
+        <div class="card mb-0">  
             <div class="flex justify-content-between mb-1">
+                
                 <div>
                     <span class="block text-500 font-lg mb-2 font-semibold" :class="{
                         'text-orange-600' : cat === 1,
@@ -36,7 +38,7 @@ defineProps({
                 </div>
             </div>
             <span class="text-500">Cant.  </span>
-            <span class="text-green-500 font-medium text-lg">{{ cant }}</span>
+            <Badge :value="cant" severity="success"></Badge>  
         </div>
     </div>
 </template>
