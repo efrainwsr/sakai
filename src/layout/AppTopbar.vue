@@ -23,8 +23,8 @@ const logoUrl = computed(() => {
 });
 
 const borrarCuenta = () =>{
-    store.total = 0;
-    store.totalBs = 0;
+    store.total.value = 0;
+    store.totalBs.value = 0;
 };
 
 const onTopBarMenuButton = () => {
@@ -74,15 +74,16 @@ const isOutsideClicked = (event) => {
         </button>
 
 
-            <Chip :label="store.total.toFixed(2)" icon="pi pi-dollar" class="ml-2"></Chip>
-            <Chip :label="'Bs  ' + store.totalBs.toFixed(2)"  icon="" class="ml-2"></Chip>
- 
-       
+            <Chip :label="store.total.value.toFixed(2)" icon="pi pi-dollar" class="ml-2"></Chip>
+            <Chip :label="'Bs  ' + store.totalBs.value.toFixed(2)"  icon="" class="ml-2"></Chip>
+            <Chip :label="'Tasa: '+store.bcvPrice.value"  icon="" class="ml-2"></Chip>
+
         <button class="p-link layout-topbar-menu-button layout-topbar-button" @click="onTopBarMenuButton()">
             <i class="pi pi-ellipsis-v"></i>
         </button>
 
-       
+        
+        
 
         <div class="layout-topbar-menu" :class="topbarMenuClasses">
             <button @click="borrarCuenta" class="p-link layout-topbar-button">

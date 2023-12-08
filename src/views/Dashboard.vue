@@ -1,48 +1,80 @@
 <script setup>
+import { app, db } from "../service/firebaseConfig.js";
 import { onMounted, reactive, ref, watch } from 'vue';
-import ProductService from '@/service/ProductService';
+import { onSnapshot, doc } from 'firebase/firestore'
+
+
+//import ProductService from '@/service/ProductService';
 import { useLayout } from '@/layout/composables/layout';
 import ItemMenu from '../components/ItemMenu.vue';
+import ItemMenuFire from '../components/ItemMenuFire.vue';
 import axios from 'axios'
-  const url = 'https://bcv-api-vnzw.onrender.com/bcv';
-  const urlMenu = 'https://bcv-api-vnzw.onrender.com/menu';
+
+  //const urlMenu = 'https://bcv-api-vnzw.onrender.com/menu';
   import { store } from '../service/store.js'
+  import { getMenuItems, obtenerBcv, getBcvRate} from '../service/MenuService.js'
+  //import { updateBcv } from '../service/tasasCambio.js'
 
-  const bcvPrice = ref(0);
-  const menu = ref(0);
-  const total = ref (0)
-  const totalBs = ref (0)
+  //const bcvPrice = ref(0);
+  const menuFire = ref(0);
 
-  
-   const obtenerBcv = onMounted( async ()=>{
-   const { data } = await axios.get(url);
-   bcvPrice.value = data;
-  })
+// ACTUALIZAR LOS PRECIOS CUANDO LA TASA CAMBIA
+ const updatePrice = async ()=>{
+    menuFire.value = await getMenuItems(); 
+ }
+
+ // OBETNER ITEMS DEL MENU
+ onMounted( async ()=>{
+     menuFire.value = await getMenuItems();
+     setTimeout(()=>{ 
+        menuFire.value.forEach(item => {
+            item.cant = 0;
+        });
+    }, 200);
+ })
+
+ 
+/*
+ onMounted(async () =>{
+    bcvPrice.value = await obtenerBcv();
+    store.bcvPrice = bcvPrice.value;
+ })*/
+
+/*
+    onMounted(async () =>{
+        menuFire.value = await getDocuments();
+        })  */
+
+
+
 
   const sumarAlTotal = (i) => {
-    store.total += menu.value[i].precio;
-    store.totalBs += menu.value[i].precioBs;
-    menu.value[i].cant += 1;
+    store.total.value += menuFire.value[i].price;
+    store.totalBs.value += menuFire.value[i].precioBs;
+    menuFire.value[i].cant += 1;
   };
 
   const restarAlTotal = (i) => {
-    store.total -= menu.value[i].precio;
-    store.totalBs -= menu.value[i].precioBs; 
-    menu.value[i].cant -= 1; 
+    store.total.value -= menuFire.value[i].price;
+    store.totalBs.value -= menuFire.value[i].precioBs; 
+    menuFire.value[i].cant -= 1; 
   };
 
   const borrarCuenta = () =>{
     total.value=0;
     totalBs.value=0;
-    menu.value.forEach((objeto) => { objeto.cant = 0; });
+    menuFire.value.forEach((objeto) => { 
+        objeto.cant = 0; console.log(objeto.cant) });
   };
 
-
+/*
    const getMenu = onMounted( async ()=>{
     const { data } = await axios.get(urlMenu);
     menu.value = data;
-    console.log(menu.value)
-   })
+    //console.log(menu.value)
+   })*/
+
+watch(store.bcvPrice, updatePrice)
 
 const { isDarkTheme } = useLayout();
 const lineOptions = ref(null);
@@ -121,6 +153,7 @@ watch(
 
 <template>
     <div class="grid ">
+        <!--
     <template v-for="(items, index) in menu">
         <ItemMenu :nombre   = "items.nombre + ' ' + items.desc" 
                   :precio   = "items.precio"
@@ -130,6 +163,18 @@ watch(
                   :restarFunc = restarAlTotal
                   :i = "index"
                   :cant = "items.cant"
+                  />
+    </template> -->
+
+    <template v-for="(items, index) in menuFire">
+    <ItemMenuFire :nombre   = "items.name + ' ' + items.desc" 
+                  :precio   = "items.price.toFixed(2)"
+                  :precioBs = "items.precioBs.toFixed(2)"
+                  :sumarFunc = sumarAlTotal
+                  :restarFunc = restarAlTotal
+                  :cant = items.cant
+                  :i = "index"
+                  
                   />
     </template>    
  

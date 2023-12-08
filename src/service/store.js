@@ -1,6 +1,8 @@
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 
-export const store = reactive({
-  total: 0,
-  totalBs: 0
-})
+ export const store = {
+  total: ref(0),
+  totalBs: ref(0),
+  bcvPrice: ref(0),
+  cant: ref([])
+}
