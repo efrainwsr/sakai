@@ -1,5 +1,5 @@
 import { app, db } from "./firebaseConfig.js";
-import { enableIndexedDbPersistence, collection ,getDocs,getDoc, query, doc, onSnapshot  } from "firebase/firestore"; // Importa la función de persistencia
+import { enableIndexedDbPersistence, collection ,getDocs,getDoc, query, doc, onSnapshot, where, orderBy  } from "firebase/firestore"; // Importa la función de persistencia
 import axios from 'axios';
 import { store } from './store.js'
 
@@ -8,8 +8,7 @@ const url = 'https://bcv-api-vnzw.onrender.com/bcv';
 var bcvPrice = 0;
 var menuItemsRef = null;
 
-
-
+/*
 enableIndexedDbPersistence(db)
   .then(() => {
     // Éxito
@@ -20,7 +19,7 @@ enableIndexedDbPersistence(db)
     } else if (err.code === 'unimplemented') {
       // El navegador no admite persistencia de Firestore
     }
-  });
+  });*/
 
  export const obtenerBcv = async () => {
   const bcvRef = doc(db, 'tasas', 'sGADlxVq7kiPS9dKsxOf')
@@ -31,17 +30,26 @@ enableIndexedDbPersistence(db)
 
  export const getBcvRate = onSnapshot(doc(db, 'tasas', 'sGADlxVq7kiPS9dKsxOf'), (doc) => {
     store.bcvPrice.value = doc.data().tasa; 
-    console.log(doc.data().tasa)
+    //console.log(doc.data().tasa)
     //bcvPrice.value = doc.data().tasa;
 });
 
   export const getMenuItems = async () => {
     //let bcvPrice = await obtenerBcv();
-    const query = await getDocs(collection(db, "menu"));
+
+
+    const q = query(collection(db, "menu"), where("status", "==", "Disponible"));
+    const querySnapshot = await getDocs(q);
+     const data = querySnapshot.docs.map((doc) =>{
+      return {id: doc.id,...doc.data(), precioBs: (doc.data().price) * store.bcvPrice.value };
+    });
+
+    /*
+    const query = await getDocs(collection(db, "menu"), where("status", "===", "Disponible"), orderBy("name"));
     const data = query.docs.map((doc) =>{
       return {id: doc.id,...doc.data(), precioBs: (doc.data().price) * store.bcvPrice.value };
     });
-    menuItemsRef = query;
+    menuItemsRef = query;*/
     return data;
   };
 

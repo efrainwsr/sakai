@@ -1,10 +1,17 @@
 <script setup>
-    import { ref, onMounted } from 'vue';
+    import { ref, onMounted } from 'vue'; 
+    import { useToast } from 'primevue/usetoast';
+    const toast = useToast();
+
     import { app, db } from "../service/firebaseConfig.js";
     import {collection ,getDocs,getDoc, query, doc, addDoc } from "firebase/firestore"; 
 
     const categoryItems = ref([]);
     const sizeItems = ref([]);
+    const statusItems = ref([
+        {name: "Disponible"},
+        {name: "No Disponible"},
+    ]);
 
     const menuModel = ref({
         name: "",
@@ -12,8 +19,21 @@
         price: "",
         category: null,
         size: "",
+        status: "",
         ingredients: ""
     })
+
+const clearMenuModel = () => {
+  menuModel.value = {
+    name: "",
+    desc: "",
+    price: "",
+    category: null,
+    size: "",
+    status: "",
+    ingredients: ""
+  };
+};
 
 //  CONSULTAR CATERGORIAS
     onMounted(async () => {
@@ -30,33 +50,33 @@
     onMounted(async () => {
         const query = await getDocs(collection(db, "sizes"));
         const data = query.docs.map((doc) =>{
-          return {id: doc.id, ...doc.data()};
+          return {...doc.data()};
       });
         sizeItems.value = data;
-       // console.log(sizeItems.value)
+       //console.log(data)
     });
-
-    //const dropdownItem = ref();
 
 // Add a new document in collection "menu"
     const saveMenuItem = async ()=>{
         const categoryId = menuModel.value.category.id;
+        const sizeName = menuModel.value.size.name;
+        const statusName = menuModel.value.status.name;
+        menuModel.value.status = statusName;
         menuModel.value.category = categoryId;
+        menuModel.value.size = sizeName;
         menuModel.value.price = parseFloat(menuModel.value.price);
+
         const saveDoc = await addDoc(collection(db, "menu"), menuModel.value );
-        //console.log(menuModel.value);
+        clearMenuModel();
         console.log("Document written with ID: ", saveDoc.id);
+        toast.add({ severity: 'success', summary: 'Exito', detail: 'Los datos se han guardado.', life: 3000 });
     }; 
-
-
-
-
 
 </script>
 
 <template>
     <div class="grid">
-
+        <Toast/>
         <div class="col-12">
             <div class="card">
                 <h5>Agregar al menu</h5>
@@ -84,7 +104,7 @@
 
                     <div class="field col-12 md:col-3">
                         <label for="price">Precio</label>
-                        <InputText v-model="menuModel.price" id="price" type="number" placeholder="Ej. 5.00" />
+                        <InputNumber v-model="menuModel.price" id="price" placeholder="Ej. 5.00"  mode="currency" currency="USD" locale="en-US"/>
                     </div>
 
                     <div class="field col-12 md:col-3">
@@ -95,6 +115,11 @@
                     <div class="field col-12 md:col-3">
                         <label for="size">Tamaño</label>
                         <Dropdown v-model="menuModel.size" id="size" :options="sizeItems" optionLabel="name" placeholder="Seleccione una..."></Dropdown>
+                    </div>
+
+                    <div class="field col-12 md:col-3">
+                        <label for="status">Status</label>
+                        <Dropdown v-model="menuModel.status" id="status" :options="statusItems" optionLabel="name" placeholder="Seleccione una..."></Dropdown>
                     </div>
 
 
