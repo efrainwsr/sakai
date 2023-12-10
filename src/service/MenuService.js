@@ -6,7 +6,41 @@ import { store } from './store.js'
 
 const url = 'https://bcv-api-vnzw.onrender.com/bcv';
 var bcvPrice = 0;
-var menuItemsRef = null;
+
+ export const obtenerBcv = async () => {
+  const bcvRef = doc(db, 'tasas', 'sGADlxVq7kiPS9dKsxOf')
+  const tasa = await getDoc(bcvRef);
+  let bcvPrice = tasa.data().tasa;
+  return bcvPrice;
+}
+
+ export const getBcvRate = onSnapshot(doc(db, 'tasas', 'sGADlxVq7kiPS9dKsxOf'), (doc) => {
+    store.bcvPrice.value = doc.data().tasa; 
+});
+
+  export const getMenuItems = async () => {
+    const q = query(collection(db, "menu"), where("status", "==", "Disponible"));
+    const querySnapshot = await getDocs(q);
+     const data = querySnapshot.docs.map((doc) =>{
+      return {id: doc.id,
+              ...doc.data(),
+              precioBs: (doc.data().price) * store.bcvPrice.value,
+              cant: 0 };
+    });
+
+    /*
+    const query = await getDocs(collection(db, "menu"));
+    const data = query.docs.map((doc) =>{
+      return {id: doc.id,...doc.data(), precioBs: (doc.data().price) * store.bcvPrice.value };
+    });
+    menuItemsRef = query;*/
+    return data;
+  };
+
+
+
+
+
 
 /*
 enableIndexedDbPersistence(db)
@@ -21,37 +55,9 @@ enableIndexedDbPersistence(db)
     }
   });*/
 
- export const obtenerBcv = async () => {
-  const bcvRef = doc(db, 'tasas', 'sGADlxVq7kiPS9dKsxOf')
-  const tasa = await getDoc(bcvRef);
-  let bcvPrice = tasa.data().tasa;
-  return bcvPrice;
-}
-
- export const getBcvRate = onSnapshot(doc(db, 'tasas', 'sGADlxVq7kiPS9dKsxOf'), (doc) => {
-    store.bcvPrice.value = doc.data().tasa; 
-    //console.log(doc.data().tasa)
-    //bcvPrice.value = doc.data().tasa;
-});
-
-  export const getMenuItems = async () => {
-    //let bcvPrice = await obtenerBcv();
 
 
-    const q = query(collection(db, "menu"), where("status", "==", "Disponible"));
-    const querySnapshot = await getDocs(q);
-     const data = querySnapshot.docs.map((doc) =>{
-      return {id: doc.id,...doc.data(), precioBs: (doc.data().price) * store.bcvPrice.value };
-    });
 
-    /*
-    const query = await getDocs(collection(db, "menu"), where("status", "===", "Disponible"), orderBy("name"));
-    const data = query.docs.map((doc) =>{
-      return {id: doc.id,...doc.data(), precioBs: (doc.data().price) * store.bcvPrice.value };
-    });
-    menuItemsRef = query;*/
-    return data;
-  };
 
 //bcvPrice = await obtenerBcv();
 

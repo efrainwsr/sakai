@@ -4,5 +4,5 @@ import { reactive, ref } from 'vue'
   total: ref(0),
   totalBs: ref(0),
   bcvPrice: ref(0),
-  cant: ref([])
+  resetCant: ref(false),
 }

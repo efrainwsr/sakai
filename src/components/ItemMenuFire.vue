@@ -1,30 +1,30 @@
 <script setup>
-defineProps({
-    nombre: String,
-    precio: Number,
-    precioBs: Number,
-    cant: Number,
-    cat: Number,
-    sumarFunc: Function,
-    restarFunc: Function,
-    i: Number
-});
+    defineProps({
+        nombre: String,
+        precio: Number,
+        precioBs: Number,
+        cant: Number,
+        cat: Number,
+        sumarFunc: Function,
+        restarFunc: Function,
+        i: Number
+    });
 </script>
 
 <template>
     <div class="col-12 lg:col-6 xl:col-4">
-        
-        <div class="card mb-0">  
+
+        <div class="card padding-1rem">  
             <div class="flex justify-content-between mb-1">
-                
+
                 <div>
                     <span class="block text-500 font-lg mb-2 font-semibold" :class="{
-                        'text-orange-600' : cat === 1,
-                        'text-green-600' : cat === 2,
-                        'text-yellow-600' : cat === 3,
-                        'text-pink-600' : cat === 4,
-                        'text-black-600' : cat === 5,
-                        'text-cyan-600' : cat === 6
+                        'text-orange-400' : cat === 'RrR3f975hvIq9cYLbRWo',
+                        'text-green-300' : cat === '4fnLROXod4REGMc5dwP8',
+                        'text-yellow-600' : cat === '6chIGHRpVdy0ufJjxcCg',
+                        'text-pink-300' : cat === '6ygD4GZjBLeqMUi6G5K8',
+                        'text-black-600' : cat === '',
+                        'text-cyan-600' : cat === 'qgJWqToTuyIqOatP8lIp'
                     }">{{ nombre.toUpperCase() }}</span>
                     <div class="inline text-900 font-medium mr-4">$ {{ precio }}</div>
                     <div class="inline text-900 font-medium ">Bs. {{ precioBs}}</div>
@@ -36,8 +36,19 @@ defineProps({
                     <Button @click="sumarFunc(i)" icon="pi pi-plus" severity="success" text/>
                 </div>
             </div>
-            <span class="text-500">Cant.  </span>
-            <Badge :value="cant" severity="success"></Badge>  
+            <template v-if="cant >=1">
+                <!--<span class="inline text-900 font-medium">Cant. </span>
+                <Badge :value="cant" severity='success'></Badge>-->
+
+                <Chip class="pl-0">
+                <span class="ml-2 mr-2 font-medium">Cant.</span>
+                <span class="text-white bg-gray-500 font-bold border-circle w-2rem h-2rem flex align-items-center justify-content-center">{{cant}}</span>
+            </Chip>
+            </template>
+
+            
+            <!-- :severity=" cant >= 1 ? 'info' : 'danger' -->
+            <!-- <div class="inline text-900 font-semibold ">{{ cant}}</div> -->
         </div>
     </div>
 </template>
@@ -49,6 +60,9 @@ defineProps({
     }
     .shadow-cyan{
         box-shadow: 0px 10px 15px -3px #059BB4;
+    }
+    .padding-1rem{
+        padding: 1rem;
     }
     
 </style>

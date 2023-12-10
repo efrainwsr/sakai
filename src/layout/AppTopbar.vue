@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount  } from 'vue';
 import { useLayout } from '@/layout/composables/layout';
 import { useRouter } from 'vue-router';
 import { store } from '../service/store.js';
@@ -25,6 +25,7 @@ const logoUrl = computed(() => {
 const borrarCuenta = () =>{
     store.total.value = 0;
     store.totalBs.value = 0;
+    store.resetCant.value = true;
 };
 
 const onTopBarMenuButton = () => {
@@ -74,9 +75,9 @@ const isOutsideClicked = (event) => {
         </button>
 
 
-            <Chip :label="store.total.value.toFixed(2)" icon="pi pi-dollar" class="ml-2"></Chip>
-            <Chip :label="'Bs  ' + store.totalBs.value.toFixed(2)"  icon="" class="ml-2"></Chip>
-            <Chip :label="'Tasa: '+store.bcvPrice.value"  icon="" class="ml-2"></Chip>
+            <Chip :label="store.total.value.toFixed(2)" icon="pi pi-dollar"></Chip>
+            <Chip :label="'Bs  ' + store.totalBs.value.toFixed(2)"  ></Chip>
+            <Chip :label="'Tasa: '+store.bcvPrice.value"></Chip>
 
         <button class="p-link layout-topbar-menu-button layout-topbar-button" @click="onTopBarMenuButton()">
             <i class="pi pi-ellipsis-v"></i>

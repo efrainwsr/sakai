@@ -1,6 +1,7 @@
 <script setup>
 import { app, db } from "../service/firebaseConfig.js";
-import { onMounted, reactive, ref, watch } from 'vue';
+import { onMounted, reactive, ref, watch} from 'vue';
+
 import { onSnapshot, doc } from 'firebase/firestore'
 
 
@@ -26,11 +27,7 @@ import axios from 'axios'
  // OBETNER ITEMS DEL MENU
  onMounted( async ()=>{
      menuFire.value = await getMenuItems();
-     setTimeout(()=>{ 
-        menuFire.value.forEach(item => {
-            item.cant = 0;
-        });
-    }, 200);
+     console.log(menuFire.value)
  })
 
  
@@ -45,26 +42,25 @@ import axios from 'axios'
         menuFire.value = await getDocuments();
         })  */
 
-
-
+const resetCant = () => {
+    if(store.resetCant.value==true){
+      menuFire.value.forEach((item) => {
+        item.cant = 0;
+        });
+      }
+    }; 
 
   const sumarAlTotal = (i) => {
     store.total.value += menuFire.value[i].price;
     store.totalBs.value += menuFire.value[i].precioBs;
     menuFire.value[i].cant += 1;
+    store.resetCant.value = false;
   };
 
   const restarAlTotal = (i) => {
     store.total.value -= menuFire.value[i].price;
     store.totalBs.value -= menuFire.value[i].precioBs; 
     menuFire.value[i].cant -= 1; 
-  };
-
-  const borrarCuenta = () =>{
-    total.value=0;
-    totalBs.value=0;
-    menuFire.value.forEach((objeto) => { 
-        objeto.cant = 0; console.log(objeto.cant) });
   };
 
 /*
@@ -75,6 +71,7 @@ import axios from 'axios'
    })*/
 
 watch(store.bcvPrice, updatePrice)
+watch(store.resetCant, resetCant )
 
 const { isDarkTheme } = useLayout();
 const lineOptions = ref(null);
@@ -153,18 +150,6 @@ watch(
 
 <template>
     <div class="grid ">
-        <!--
-    <template v-for="(items, index) in menu">
-        <ItemMenu :nombre   = "items.nombre + ' ' + items.desc" 
-                  :precio   = "items.precio"
-                  :precioBs = "items.precioBs"
-                  :cat      = "items.cat"
-                  :sumarFunc = sumarAlTotal
-                  :restarFunc = restarAlTotal
-                  :i = "index"
-                  :cant = "items.cant"
-                  />
-    </template> -->
 
     <template v-for="(items, index) in menuFire">
     <ItemMenuFire :nombre   = "items.name + ' ' + items.desc" 
@@ -172,6 +157,7 @@ watch(
                   :precioBs = "items.precioBs.toFixed(2)"
                   :sumarFunc = sumarAlTotal
                   :restarFunc = restarAlTotal
+                  :cat = items.category
                   :cant = items.cant
                   :i = "index"
                   
